@@ -1,7 +1,7 @@
 // frontend/app/api/auth/signup/route.js
-import { responseErrorHandler } from '@/utils/errorHandler';
 import axios from 'axios';
 import { NextResponse } from 'next/server';
+import { responseErrorHandler } from '../../../utils/errorHandler';
 
 export async function POST(request) {
   const requestBody = await request.json();

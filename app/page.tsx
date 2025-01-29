@@ -3,19 +3,22 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { ImageModal } from "@/components/modal/ImageModal"
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState("medium")
-  const [images, setImages] = useState([])
+  const [images, setImages] = useState<any[]>([])
   const [selectedImage, setSelectedImage] = useState(null)
 
   const handleGenerate = async () => {
+
     if (!prompt.trim()) {
       toast.error("Please enter a valid prompt")
       return
@@ -88,6 +91,23 @@ export default function Home() {
                 className="glass glass-hover"
               />
             </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200" htmlFor="size">
+                Select Image Size
+              </label>
+              <Select value={size} onValueChange={setSize} >
+                <SelectTrigger >
+                  <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="small">Small (256x256)</SelectItem>
+                  <SelectItem value="medium" >Medium (512x512)</SelectItem>
+                  <SelectItem value="large" >Large (1024x1024)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <Button
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-opacity"
               onClick={handleGenerate}
@@ -101,11 +121,18 @@ export default function Home() {
 
         <Card className="glass p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
           <h2 className="text-2xl font-semibold mb-6">Preview</h2>
-          <div className="aspect-square rounded-xl glass flex items-center justify-center group hover:border-purple-500/50 transition-colors">
+          
+            
+          {images.length > 0 && (
+        <div className="aspect-square rounded-xl glass flex items-center justify-center group hover:border-purple-500/50 transition-colors">
+          {images.map((image, index) => (
+            <ImageModal key={index} image={image} index={index} />
+          ))}
+        </div>
+      )}
             <p className="text-muted-foreground group-hover:scale-105 transition-transform">
               Your generated image will appear here
             </p>
-          </div>
         </Card>
       </div>
     </div>

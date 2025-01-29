@@ -1,4 +1,3 @@
-// frontend/app/api/auth/login/route.js
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 

@@ -3,6 +3,8 @@
 import { Card } from "@/components/ui/card";
 import { Download, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const mockImages = [
   {
@@ -26,6 +28,26 @@ const mockImages = [
 ];
 
 export default function Creations() {
+
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const { data } = await axios.get("/api/images");
+        console.log(data);
+        setImages(data); // Expect backend to return user images
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchImages();
+  }, []);
+
   return (
     <div className="container mx-auto p-8 relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-1/2 bg-primary/10 rounded-full blur-3xl -z-10" />
@@ -40,34 +62,37 @@ export default function Creations() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockImages.map((image) => (
-          <Card key={image.id} className="glass overflow-hidden group hover:shadow-xl transition-all duration-300">
-            <div className="aspect-square relative overflow-hidden">
-              <img
-                src={image.url}
-                alt={image.prompt}
-                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Button
-                variant="secondary"
-                size="icon"
-                className="absolute top-2 right-2 glass opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="p-4">
-              <p className="font-medium mb-1 line-clamp-2 group-hover:text-purple-500 transition-colors">
-                {image.prompt}
-              </p>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <ImageIcon className="h-4 w-4" />
-                {image.date}
-              </p>
-            </div>
-          </Card>
-        ))}
+        {
+          loading ? (
+            <p></p>) : images.map((item, i) => (
+              <Card key={item.id} className="glass overflow-hidden group hover:shadow-xl transition-all duration-300">
+                <div className="aspect-square relative overflow-hidden">
+                  <img
+                    src={item.imageUrl}
+                    alt={`Generated ${i}`}
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute top-2 right-2 glass opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="p-4">
+                  <p className="font-medium mb-1 line-clamp-2 group-hover:text-purple-500 transition-colors">
+                    {item.prompt}
+                  </p>
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    {item.date}
+                  </p>
+                </div>
+              </Card>
+            ))
+        }
       </div>
     </div>
   );

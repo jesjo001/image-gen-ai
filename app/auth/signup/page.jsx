@@ -6,7 +6,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UserPlus, Mail, Lock, User, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { responseErrorHandler } from '../../utils/errorHandler';
+import axios from "axios";
 
+  
 export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -20,7 +25,7 @@ export default function SignUp() {
       const { data } = await axios.post("/api/auth/signup", { email, password });
       localStorage.setItem("token", data.token); // Save token
       toast.success("Signup successful!");
-      router.push("/dashboard");
+      router.push("/auth/login");
 
       setLoading(false);
     } catch (error) {
@@ -51,7 +56,7 @@ export default function SignUp() {
         </div>
 
         <form onSubmit={handleSignup} className="space-y-4">
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -59,11 +64,10 @@ export default function SignUp() {
                 placeholder="Full Name"
                 required
                 className="pl-10 glass glass-hover"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="space-y-2">
             <div className="relative">
@@ -72,8 +76,8 @@ export default function SignUp() {
                 type="email"
                 placeholder="Email"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 glass glass-hover"
               />
             </div>
@@ -86,6 +90,8 @@ export default function SignUp() {
                 type="password"
                 placeholder="Password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="pl-10 glass glass-hover"
               />
             </div>

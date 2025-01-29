@@ -8,6 +8,7 @@ import { LogIn, Mail, Lock, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import axios from 'axios';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -17,13 +18,24 @@ export default function Login() {
 
 
   const handleLogin = async (e) => {
+
     e.preventDefault();
+
+
+    setLoading(true);
     try {
+        // let data = { email, password };
       const { data } = await axios.post("/api/auth/login", { email, password });
       localStorage.setItem("token", data.token); // Save token
+      
+      console.log("Login: ", data);
+      
       toast.success("Login successful!");
-      router.push("/dashboard");
+      setLoading(false);
+      router.push("/");
     } catch (error) {
+      console.log(error);
+      setLoading(false);
       toast.error(error.response?.data?.message || "Login failed");
     }
   };
