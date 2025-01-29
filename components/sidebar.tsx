@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Image, Menu, Sparkles } from "lucide-react";
+import { Home, Image, Menu, Sparkles, LogIn } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +15,7 @@ export default function Sidebar() {
   const navigation = [
     { name: "Create", href: "/", icon: Home },
     { name: "My Creations", href: "/creations", icon: Image },
+    { name: "Sign In", href: "/auth/login", icon: LogIn },
   ];
 
   return (

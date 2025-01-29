@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import Sidebar from '@/components/sidebar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,6 +33,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <ToastContainer aria-label="Toast notifications" />
         </ThemeProvider>
       </body>
     </html>

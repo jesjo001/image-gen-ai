@@ -6,16 +6,47 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const [size, setSize] = useState("medium")
+  const [images, setImages] = useState([])
+  const [selectedImage, setSelectedImage] = useState(null)
 
   const handleGenerate = async () => {
-    setLoading(true);
-    // Add your image generation logic here
-    setTimeout(() => setLoading(false), 2000);
-  };
+    if (!prompt.trim()) {
+      toast.error("Please enter a valid prompt")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const response = await fetch("/api/images/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, size }),
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        toast.error(errorData.error || "Failed to generate images")
+        return
+      }
+
+      const data = await response.json()
+      setImages((prevImages) => [...prevImages, data])
+      toast.success("Images generated successfully")
+    } catch (err) {
+      console.error(err)
+      toast.error("An error occurred while generating the images")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="container mx-auto p-8 relative">
